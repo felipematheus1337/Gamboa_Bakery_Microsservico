@@ -48,7 +48,7 @@ public class PedidoController {
 
     @PostMapping()
     public ResponseEntity<PedidoDTO> realizaPedido(@RequestBody @Valid PedidoDTO dto, UriComponentsBuilder uriBuilder) {
-        
+
         if(!eParaRealizarPedido(dto.getEnderecoDTO().getCep())) {
             throw new BusinessException("Endereço Invalido!");
         }
