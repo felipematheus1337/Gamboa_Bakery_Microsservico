@@ -3,6 +3,8 @@ package br.compedidos.controller;
 
 import br.compedidos.dto.PedidoDTO;
 import br.compedidos.dto.StatusDTO;
+import br.compedidos.exception.BusinessException;
+import br.compedidos.http.CorreiosAPI;
 import br.compedidos.service.Impl.PedidoServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,7 +15,9 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.net.URI;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/pedidos")
@@ -21,6 +25,9 @@ import java.util.List;
 public class PedidoController {
 
     private final PedidoServiceImpl service;
+    private static final String[] validAddress = new String[]{"Gamboa", "Saúde"};
+
+    private final CorreiosAPI api;
 
     @GetMapping()
     public List<PedidoDTO> listarTodos() {
@@ -41,6 +48,11 @@ public class PedidoController {
 
     @PostMapping()
     public ResponseEntity<PedidoDTO> realizaPedido(@RequestBody @Valid PedidoDTO dto, UriComponentsBuilder uriBuilder) {
+        
+        if(!eParaRealizarPedido(dto.getEnderecoDTO().getCep())) {
+            throw new BusinessException("Endereço Invalido!");
+        }
+
         var pedidoRealizado = service.criarPedido(dto);
 
         URI endereco = uriBuilder.path("/pedidos/{id}").buildAndExpand(pedidoRealizado.getId()).toUri();
@@ -63,6 +75,11 @@ public class PedidoController {
 
         return ResponseEntity.ok().build();
 
+    }
+
+    public boolean eParaRealizarPedido(String cep) {
+        var endereco = api.consultarCep(cep);
+        return Arrays.stream(validAddress).anyMatch(x -> x.equals(endereco.getBairro()));
     }
 
 }
