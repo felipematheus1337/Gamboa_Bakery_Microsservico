@@ -2,6 +2,7 @@ package br.compagamentosms.service.impl;
 
 
 import br.compagamentosms.dto.PagamentoDTO;
+import br.compagamentosms.http.PedidoClient;
 import br.compagamentosms.model.Pagamento;
 import br.compagamentosms.model.Status;
 import br.compagamentosms.repository.PagamentoRepository;
@@ -22,6 +23,8 @@ public class PagamentoServiceImpl implements PagamentoService {
     private final PagamentoRepository repository;
 
     private final ModelMapper mapper;
+
+    private final PedidoClient pedido;
 
 
 

@@ -3,6 +3,7 @@ package br.compagamentosms.controller;
 
 import br.compagamentosms.dto.PagamentoDTO;
 import br.compagamentosms.service.PagamentoService;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
