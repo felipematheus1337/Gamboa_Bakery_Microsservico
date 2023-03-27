@@ -15,4 +15,8 @@ public class ItemDoPedidoDTO {
     private Integer quantidade;
     private String descricao;
     private TipoItem tipoItem;
+
+    public ItemDoPedidoDTO(Integer quantidade) {
+        this.quantidade = quantidade;
+    }
 }

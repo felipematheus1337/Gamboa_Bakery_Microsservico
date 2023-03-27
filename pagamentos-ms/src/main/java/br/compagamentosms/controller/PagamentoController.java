@@ -5,6 +5,9 @@ import br.compagamentosms.dto.PagamentoDTO;
 import br.compagamentosms.service.PagamentoService;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -22,6 +25,11 @@ import java.net.URI;
 public class PagamentoController {
 
     private final PagamentoService service;
+    private final RabbitTemplate rabbitTemplate;
+
+    @Value("${rabbitmq-ex}")
+    private String nomeDaEx;
+
 
     @GetMapping
     public Page<PagamentoDTO> listar(@PageableDefault(size = 10) Pageable paginacao) {
@@ -40,6 +48,8 @@ public class PagamentoController {
     public ResponseEntity<PagamentoDTO> cadastrar(@RequestBody @Valid PagamentoDTO dto, UriComponentsBuilder uriBuilder) {
         var pagamento = service.criarPagamento(dto);
         URI endereco = uriBuilder.path("/pagamentos/{id}").buildAndExpand(pagamento.getId()).toUri();
+
+        rabbitTemplate.convertAndSend(nomeDaEx,"",pagamento);
 
         return ResponseEntity.created(endereco).body(pagamento);
     }
