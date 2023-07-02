@@ -17,5 +17,5 @@ public interface PedidoService {
 
     PedidoDTO atualizaStatus(String id, StatusDTO dto);
 
-    void aprovaPagamentoPedido(String id);
+    void aprovaPagamentoPedido(Long id);
 }

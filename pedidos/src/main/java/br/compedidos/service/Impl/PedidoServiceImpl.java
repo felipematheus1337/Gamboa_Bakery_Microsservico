@@ -1,8 +1,10 @@
 package br.compedidos.service.Impl;
 
+import br.compedidos.dto.ItemDoPedidoDTO;
 import br.compedidos.dto.PedidoDTO;
 import br.compedidos.dto.StatusDTO;
 import br.compedidos.exception.BusinessException;
+import br.compedidos.model.ItemDoPedido;
 import br.compedidos.model.Pedido;
 import br.compedidos.model.Status;
 import br.compedidos.repository.PedidoRepository;
@@ -12,6 +14,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,9 +47,20 @@ public class PedidoServiceImpl implements PedidoService {
 
         pedido.setDataHora(LocalDateTime.now());
         pedido.setStatus(Status.REALIZADO);
+
+        List<ItemDoPedido> itens = dto.getItems()
+                .stream()
+                .map(itemDto -> {
+                    ItemDoPedido item = new ItemDoPedido();
+                    item.setDescricao(itemDto.getDescricao());
+                    item.setQuantidade(itemDto.getQuantidade());
+                    item.setTipoItem(itemDto.getTipoItem());
+                    return item;
+                }).collect(Collectors.toList());
+        pedido.setItems(itens);
         Pedido salvo = repository.save(pedido);
 
-        return mapper.map(pedido, PedidoDTO.class);
+        return mapper.map(salvo, PedidoDTO.class);
     }
 
     @Override
@@ -59,8 +73,8 @@ public class PedidoServiceImpl implements PedidoService {
     }
 
     @Override
-    public void aprovaPagamentoPedido(String id) {
-        var pedido = repository.findById(id)
+    public void aprovaPagamentoPedido(Long id) {
+        var pedido = repository.findById(id.toString())
                 .orElseThrow(() -> new BusinessException("Invalid ID"));
 
         pedido.setStatus(Status.PAGO);

@@ -89,6 +89,36 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-aop</artifactId>
 		</dependency>
+        <dependency>
+            <groupId>com.epages</groupId>
+            <artifactId>wiremock-spring-boot-starter</artifactId>
+            <version>0.8.0</version>
+        </dependency>
+		<dependency>
+			<groupId>com.epages</groupId>
+			<artifactId>wiremock-spring-boot-starter</artifactId>
+			<version>0.8.0</version>
+		</dependency>
+		<dependency>
+			<groupId>io.github.ricall.junit5-wiremock</groupId>
+			<artifactId>junit5-wiremock</artifactId>
+			<version>2.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>io.github.ricall.junit5-wiremock</groupId>
+			<artifactId>junit5-wiremock</artifactId>
+			<version>2.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.epages</groupId>
+			<artifactId>wiremock-spring-boot-starter</artifactId>
+			<version>0.8.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.epages</groupId>
+			<artifactId>wiremock-spring-boot-starter</artifactId>
+			<version>0.8.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>

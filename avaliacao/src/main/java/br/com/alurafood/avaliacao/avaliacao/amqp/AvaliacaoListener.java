@@ -1,36 +1,39 @@
 package br.com.alurafood.avaliacao.avaliacao.amqp;
 
+import br.com.alurafood.avaliacao.avaliacao.dto.AvaliacaoDTO;
 import br.com.alurafood.avaliacao.avaliacao.dto.PagamentoDto;
+import br.com.alurafood.avaliacao.avaliacao.exception.BusinessException;
+import br.com.alurafood.avaliacao.avaliacao.model.Avaliacao;
+import br.com.alurafood.avaliacao.avaliacao.repository.AvaliacaoRepository;
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
-@Component
-public class AvaliacaoListener {
-    @RabbitListener(queues = "pagamentos.detalhes-avaliacao")
-    public void recebeMensagem(@Payload PagamentoDto pagamento) {
-        System.out.println(pagamento.getId());
-        System.out.println(pagamento.getNumero());
+import java.util.Optional;
 
-        if (pagamento.getNumero().equals("0000")) {
-           throw new RuntimeException("Não consegui processar");
+@Component
+@RequiredArgsConstructor
+public class AvaliacaoListener {
+
+    private final AvaliacaoRepository repository;
+    private final ModelMapper mapper;
+
+    @RabbitListener(queues = "pagamentos.detalhes-avaliacao")
+    public void recebeMensagem(@Payload AvaliacaoDTO avaliacao) {
+
+        if(avaliacao.getDescricao() == null) {
+            throw new BusinessException("Não é possível salvar uma avaliação sem uma descrição, seja mais específico!");
+        } else if(avaliacao.getNota() < 0) {
+            throw new BusinessException("Não é possível salvar uma avaliação com nota menor do que zero!");
+        } else if (avaliacao.getPedidoId() == null) {
+            throw new BusinessException("Não é possível salvar uma avaliação sem um pedido vinculado!");
         }
 
+        Avaliacao avaliacaoParaSalvar = mapper.map(avaliacao, Avaliacao.class);
 
+        repository.save(avaliacaoParaSalvar);
 
-
-        String mensagem = """
-                Necessário criar registro de avaliação para o pedido: %s 
-                Id do pagamento: %s
-                Nome do cliente: %s
-                Valor R$: %s
-                Status: %s 
-                """.formatted(pagamento.getPedidoId(),
-                pagamento.getId(),
-                pagamento.getNome(),
-                pagamento.getValor(),
-                pagamento.getStatus());
-
-        System.out.println(mensagem);
     }
 }

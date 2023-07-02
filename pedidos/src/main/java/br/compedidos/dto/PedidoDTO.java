@@ -20,6 +20,5 @@ public class PedidoDTO {
     private LocalDateTime dataHora;
     private Status status;
     private List<ItemDoPedidoDTO> items = new ArrayList<>();
-
-    private EnderecoDTO enderecoDTO;
+    private EnderecoDTO endereco;
 }

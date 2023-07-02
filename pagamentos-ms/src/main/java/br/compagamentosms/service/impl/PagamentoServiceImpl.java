@@ -75,7 +75,7 @@ public class PagamentoServiceImpl implements PagamentoService {
 
         pagamento.get().setStatus(Status.CONFIRMADO);
         repository.save(pagamento.get());
-        pedido.atualizaPagamento(pagamento.get().getPedidoId());
+        pedido.aprovaPagamento(pagamento.get().getPedidoId());
     }
 
     @Override

@@ -49,7 +49,7 @@ public class PedidoController {
     @PostMapping()
     public ResponseEntity<PedidoDTO> realizaPedido(@RequestBody @Valid PedidoDTO dto, UriComponentsBuilder uriBuilder) {
 
-        if(!eParaRealizarPedido(dto.getEnderecoDTO().getCep())) {
+        if(!eParaRealizarPedido(dto.getEndereco().getCep())) {
             throw new BusinessException("Endereço Invalido!");
         }
 
@@ -69,11 +69,9 @@ public class PedidoController {
     }
 
 
-    @PutMapping("/{id}/pago")
-    public ResponseEntity<Void> aprovaPagamento(@PathVariable @NotNull String id) {
+    @PatchMapping("/{id}/pago")
+    public void aprovaPagamento(@PathVariable @NotNull Long id) {
         service.aprovaPagamentoPedido(id);
-
-        return ResponseEntity.ok().build();
 
     }
 
