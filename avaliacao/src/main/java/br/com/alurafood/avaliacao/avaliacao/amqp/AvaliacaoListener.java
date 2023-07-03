@@ -8,6 +8,7 @@ import br.com.alurafood.avaliacao.avaliacao.repository.AvaliacaoRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
@@ -19,8 +20,10 @@ public class AvaliacaoListener {
 
     private final AvaliacaoRepository repository;
     private final ModelMapper mapper;
+    private static final  String QUEUENAME = "avaliacao-queue";
 
-    @RabbitListener(queues = "pagamentos.detalhes-avaliacao")
+
+    @RabbitListener(queues = QUEUENAME)
     public void recebeMensagem(@Payload AvaliacaoDTO avaliacao) {
 
         if(avaliacao.getDescricao() == null) {
